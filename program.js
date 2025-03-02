@@ -87,9 +87,35 @@ function generatePDF(distances, totalTrees){
     documentPDF.autoTable(
         {
             head: [['Árbol 1', 'Árbol 2', 'Distance']],
-            // como son tantos arboles y tantas distancias obte por solo guardar 100000 FILAS
+            // como son tantos arboles y tantas distancias opte por solo guardar 100000 FILAS
             body: distances.slice(0,100000),
         }
     );
     documentPDF.save("modelia.pdf");
 }
+
+let btnSiniestros= document.getElementById("btnSiniestros");
+
+
+btnSiniestros.addEventListener('click',
+    async ()=>{
+        let myData4= await fetch("siniestro_modelia.geojson");
+        let myPoints2= await myData4.json();
+
+        //Agregar la capa al mapa
+        L.geoJSON(
+            myPoints2,
+            {
+                pointToLayer: (feature, latlong)=>{                    
+                    return L.circleMarker(latlong,{
+                        radius:5,
+                        fillColor:'red',
+                        weight:1,
+                        opacity:1,
+                        fillOpacity: 0.5,
+                    })
+                }
+            }
+        ).addTo(map);
+    }
+)
